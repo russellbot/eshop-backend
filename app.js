@@ -5,49 +5,25 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 
 require('dotenv/config');
-const api = process.env.API_URL;
 
 // middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 
-const productSchema = mongoose.Schema({
-    name: String,
-    image: String,
-    countInStock: {
-        type: Number,
-        required: true
-    }
-})
+// Routes
+const categoriesRoutes = require('./routers/categories');
+const productsRoutes = require('./routers/products');
+const usersRoutes = require('./routers/users');
+const ordersRoutes = require('./routers/orders');
 
-const Product = mongoose.model('Product', productSchema);
+const api = process.env.API_URL;
 
-app.get(`${api}/products`, async (req, res) => {
-    const productList = await Product.find();
+app.use(`${api}/categories`, categoriesRoutes);
+app.use(`${api}/products`, productsRoutes);
+app.use(`${api}/users`, usersRoutes);
+app.use(`${api}/orders`, ordersRoutes);
 
-    if(!productList) {
-        res.status(500).json({success: false})
-    }
-    res.send(productList);
-})
-
-app.post(`${api}/products`, (req, res) => {
-    const product = new Product({
-        name: req.body.name,
-        image: req.body.image,
-        countInStock: req.body.countInStock
-    })
-
-    product.save().then((createdProduct => {
-        res.status(201).json(createdProduct)
-    })).catch((err) => {
-        res.status(500).json({
-            error: err,
-            success: false
-        })
-    })
-})
-
+// Database
 mongoose.connect(process.env.CONNECTION_STRING, { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -60,6 +36,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     console.log(err);
 })
 
+// Server
 app.listen(3000, ()=>{
     console.log(api);
     console.log('server is running http://localhost:3000');
