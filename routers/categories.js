@@ -8,7 +8,17 @@ router.get(`/`, async (req, res) => {
     if(!categoryList) {
         res.status(500).json({success: false})
     }
-    res.send(categoryList);
+    res.status(200).send(categoryList);
+})
+
+router.get('/:id', async(req,res) => {
+    const category = await Category.findById(req.params.id);
+
+    if(!category) {
+        return res.status(500).send('the category with the given id was not found')
+    }    
+
+    res.status(200).send(category);
 })
 
 router.post('/', async (req, res) => {
@@ -19,8 +29,9 @@ router.post('/', async (req, res) => {
     })
     category = await category.save();
 
-    if(!category)
-    return res.status(404).send('the category cannot be created')
+    if(!category) {
+        return res.status(404).send('the category cannot be created')
+    }    
 
     res.send(category);
 })
