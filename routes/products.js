@@ -170,7 +170,7 @@ router.put(
         // rename image file and push to imagesPaths
         const files = req.files
         let imagesPaths = [];
-        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
         if(files) {
             files.map(file => {

@@ -10,7 +10,8 @@ function authJwt() {
     }).unless({
         path: [
             // paths to exclude from needing authorization token
-            // regex to get all GET product endpoints
+            // regex to get all GET product endpoints and to public uploads for pictures
+            {url: /\/public\/uploads(.*)/ , methods: ['GET', 'OPTIONS'] },
             {url: /\/api\/v1\/products(.*)/ , methods: ['GET', 'OPTIONS'] },
             {url: /\/api\/v1\/categories(.*)/ , methods: ['GET', 'OPTIONS'] },
             `${api}/users/login`,
