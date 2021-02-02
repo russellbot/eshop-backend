@@ -62,6 +62,10 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     if (!category) {
         return res.status(400).send('Invalid Category')
     }
+    // send message when there is no image file
+    const file = req.file;
+    if(!file) return res.status(400).send('No image in the request')
+
     // naming of the image upload
     const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
@@ -154,5 +158,40 @@ router.get(`/get/featured/:count`, async (req, res) => {
     }
     res.send(products);
 })
+
+router.put(
+    '/gallery-images/:id', 
+    uploadOptions.array('images', 10), 
+    async (req, res) => {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.status(400).send('Invalid Product ID')
+        }
+
+        // rename image file and push to imagesPaths
+        const files = req.files
+        let imagesPaths = [];
+        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+
+        if(files) {
+            files.map(file => {
+                imagesPaths.push(`${basePath}${file.filename}`);
+            })
+        }        
+
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                images: imagesPaths
+            },
+            { new: true }
+        )
+
+        if(!product) {
+            return res.status(500).send('the product cannot be updated')
+        }    
+    
+        res.send(product);
+    }
+)
 
 module.exports = router;
