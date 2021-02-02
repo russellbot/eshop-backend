@@ -3,6 +3,20 @@ const express = require('express');
 const { Category } = require('../models/category');
 const router = express.Router();
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+// destination and naming of uploaded images using multer
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/uploads')
+    },
+    filename: function (req, file, cb) {
+      const fileName = file.originalname.split(' ').join('-');
+      cb(null, fileName + '-' + Date.now())
+    }
+})
+  
+const uploadOptions = multer({ storage: storage })
 
 router.get(`/`, async (req, res) => {
     // localhost:3000/api/vi/products?categories=234234,345435
