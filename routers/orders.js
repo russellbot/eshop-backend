@@ -39,6 +39,16 @@ router.post('/', async (req, res) => {
     }))
     const orderItemsIdsResolved = await orderItemsIds;
 
+    // make an array of the prices of all items in an order with values from database
+    const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
+        const orderItem = await OrderItem.findByIdAndUpdate(orderItemId).populate('product', 'price');
+        const totalPrice = orderItem.product.price * orderItem.quantity;
+        return totalPrice
+    }))
+
+    // find sum of all of the prices in the array
+    const totalPrice = totalPrices.reduce((a,b) => a + b , 0);
+
     let order = new Order({
         orderItems: orderItemsIdsResolved,
         shippingAddress1: req.body.shippingAddress1,
@@ -47,7 +57,7 @@ router.post('/', async (req, res) => {
         zip: req.body.city,
         country: req.body.country,
         phone: req.body.phone,
-        totalPrice: req.body.totalPrice,
+        totalPrice: totalPrice,
         user: req.body.user,
     })
     order = await order.save();
