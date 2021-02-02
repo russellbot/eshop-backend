@@ -5,14 +5,29 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
 
+// hash table of apporved image types
+const FILE_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpeg',
+    'image/jpg': 'jpg'
+}
+
 // destination and naming of uploaded images using multer
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'public/uploads')
+        // make sure the image upload is a desired file type
+        const isValid = FILE_TYPE_MAP[file.mimetype];
+        let uploadError = new Error('invalid image type');
+
+        if(isValid) {
+            uploadError = null
+        }
+      cb(uploadError, 'public/uploads')
     },
     filename: function (req, file, cb) {
       const fileName = file.originalname.split(' ').join('-');
-      cb(null, fileName + '-' + Date.now())
+      const extension = FILE_TYPE_MAP[file.mimetype];
+      cb(null, `${fileName}-${Date.now()}.${extension}`)
     }
 })
   
@@ -42,17 +57,20 @@ router.get(`/:id`, async (req, res) => {
     res.send(product);
 })
 
-router.post(`/`, async (req, res) => {
+router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     const category = await Category.findById(req.body.category);
     if (!category) {
         return res.status(400).send('Invalid Category')
     }
+    // naming of the image upload
+    const fileName = req.file.filename;
+    const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
 
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
         richDescription: req.body.richDescription,
-        image: req.body.image,
+        image: `${basePath}${fileName}`,//"http://localhost:3000/public/upload/image-232332"
         brand: req.body.brand,
         price: req.body.price,
         category: req.body.category,
