@@ -66,8 +66,6 @@ router.post('/login', async (req,res) => {
     } else {
         res.status(400).send('password is wrong')
     }
-
-    return res.status(200).send(user);
 })
 
 router.post('/register', async (req, res) => {
