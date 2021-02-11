@@ -102,7 +102,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         return res.status(400).send('Invalid Category')
     }
 
-    // handling of new image if there is one
+    // Handle new image if there is one
     const file = req.file;
     let imageName = '';
     if (!file) {
