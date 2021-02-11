@@ -113,8 +113,6 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         imageName = `${basePath}${fileName}`;
     }
 
-    // const oldFileName = await Product.findById(req.params.id).populate('image');
-
     const product = await Product.findByIdAndUpdate(
         req.params.id,
         {
