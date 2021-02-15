@@ -1,7 +1,7 @@
 ## Backend of ez-shop
 
 ## Deployed URL
-to do
+https://ezshop-server.herokuapp.com/api/v1/
 
 
 ### Description
