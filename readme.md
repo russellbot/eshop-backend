@@ -5,7 +5,7 @@ to do
 
 
 ### Description
-API was created using Node.js and express. The database Mongodb in conjuction with the library mongoose. Testing was done with the application Postman. Product images are handled using Multer middleware. User authentication and admin authentication was done using simple JSON web tokens. Five models were used to store information in separate mongo databases. The user model is used to save user login information and address. The product model stores all information about a product in the store. The category model stores products into a category such as Home and Garden. The order and order-item models were created to store information from each order created by a user. 
+API was created using Node.js and express. MongoDB was used in conjuction with the library mongoose. Testing was done with the application Postman. Product images are handled using Multer middleware. User authentication and admin authentication was done using simple JSON web tokens. Five models were used to store information in separate mongo databases. The user model is used to save user login information and address. The product model stores all information about a product in the store. The category model stores products into a category such as Home and Garden. The order and order-item models were created to store information from each order created by a user. 
 
 ## CRUD Routes
 
@@ -143,7 +143,7 @@ const productSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+});
 ```
 
 ```
@@ -158,7 +158,7 @@ const categorySchema = mongoose.Schema({
     color: {
         type: String,
     }
-})
+});
 ```
 
 ```
@@ -207,7 +207,7 @@ const orderSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+});
 ```
 
 ```
@@ -220,5 +220,5 @@ const orderItemSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
     }
-})
+});
 ```
